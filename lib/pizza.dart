@@ -13,4 +13,15 @@ class Pizza {
     this.price = json['price'];
     this.imgUrl = json['imgUrl'];
   }
+
+
+  Map<String, dynamic> toJson(){
+    return {
+      'id': id,
+      'pizzaName': pizzaName,
+      'description':  description,
+      'price': price,
+      'imgUrl': imgUrl,
+    };
+  }
 }

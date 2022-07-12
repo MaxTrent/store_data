@@ -50,7 +50,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 return ListTile(
                   title: Text(pizzas.data![position].pizzaName!),
                   subtitle: Text(pizzas.data![position].description! +
-                      '- €' +
+                      ' - €' +
                       pizzas.data![position].price.toString()),
                 );
               },
@@ -71,6 +71,18 @@ class _MyHomePageState extends State<MyHomePage> {
       Pizza myPizza = Pizza.fromJson(pizza);
       myPizzas.add(myPizza);
     });
+    String json = convertToJson(myPizzas);
+    print(json);
     return myPizzas;
+
+  }
+
+  String convertToJson(List<Pizza> pizzas){
+    String json = '[';
+    pizzas.forEach((pizza) {
+      json += jsonEncode(pizza);
+    });
+    json += ']';
+    return json;
   }
 }
