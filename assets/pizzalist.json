@@ -8,7 +8,6 @@
   },
   {
     "id": 2,
-    "pizzaName": "Marinara",
     "description": "Pizza with tomato, garlic and oregano",
     "price": 7.50,
     "imageUrl": "images/marinara.png"

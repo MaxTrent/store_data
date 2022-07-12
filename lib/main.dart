@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:store_data/pizza.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
   runApp(MyApp());
@@ -26,6 +27,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  int appCounter;
   String pizzaString = '';
 
   @override
@@ -68,7 +70,8 @@ class _MyHomePageState extends State<MyHomePage> {
 
     List<Pizza> myPizzas = [];
     myMap.forEach((dynamic pizza) {
-      Pizza myPizza = Pizza.fromJson(pizza);
+      Pizza? myPizza = Pizza.fromJsonOrNull(pizza);
+      if (myPizza != null)
       myPizzas.add(myPizza);
     });
     String json = convertToJson(myPizzas);
