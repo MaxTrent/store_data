@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:store_data/names_screen.dart';
+import 'package:path_provider/path_provider.dart';
 
 void main() {
   runApp(MyApp());
@@ -10,15 +10,15 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Shared Prefs',
+      title: 'Path Provider',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        primarySwatch: Colors.deepOrange,
+        primarySwatch: Colors.teal,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
       home: Scaffold(
         appBar: AppBar(
-          title: Center(child: Text('Shared Preferences')),
+          title: Center(child: Text('Path Provider')),
         ),
         body: const MyHomePage(),
       ),
@@ -27,6 +27,48 @@ class MyApp extends StatelessWidget {
 }
 
 class MyHomePage extends StatefulWidget {
+  const MyHomePage({Key? key}) : super(key: key);
+
+  @override
+  State<MyHomePage> createState() => _MyHomePageState();
+}
+
+class _MyHomePageState extends State<MyHomePage> {
+  String documentsPath = '';
+  String tempPath = '';
+
+
+  @override
+  void initState(){
+    getPaths();
+    super.initState();
+  }
+
+  Future getPaths() async{
+    final docDir = await getApplicationDocumentsDirectory();
+    final tempDir = await getTemporaryDirectory();
+    setState(() {
+      documentsPath = docDir.path;
+      tempPath = tempDir.path;
+    });
+
+  }
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          Text('Doc Path: ${documentsPath}'),
+          Text('Temp Path: ${tempPath}'),
+        ],
+      ),
+    );
+  }
+}
+
+
+/*class MyHomePage extends StatefulWidget {
   const MyHomePage({Key? key}) : super(key: key);
 
   @override
@@ -92,7 +134,9 @@ class _MyHomePageState extends State<MyHomePage> {
     final prefs = await SharedPreferences.getInstance();
     prefs.setString('nameData', nameValue);
   }
-}
+}*/
+
+
 
 /*import 'dart:convert';
 import 'package:store_data/pizza.dart';
