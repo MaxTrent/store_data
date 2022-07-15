@@ -1,4 +1,100 @@
-import 'dart:convert';
+import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:store_data/names_screen.dart';
+
+void main() {
+  runApp(MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Shared Prefs',
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+        primarySwatch: Colors.deepOrange,
+        visualDensity: VisualDensity.adaptivePlatformDensity,
+      ),
+      home: Scaffold(
+        appBar: AppBar(
+          title: Center(child: Text('Shared Preferences')),
+        ),
+        body: const MyHomePage(),
+      ),
+    );
+  }
+}
+
+class MyHomePage extends StatefulWidget {
+  const MyHomePage({Key? key}) : super(key: key);
+
+  @override
+  State<MyHomePage> createState() => _MyHomePageState();
+}
+
+class _MyHomePageState extends State<MyHomePage> {
+  final namesController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        SizedBox(
+          height: 50,
+        ),
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: TextField(
+            controller: namesController,
+            decoration: InputDecoration(
+              border:
+                  OutlineInputBorder(borderRadius: BorderRadius.circular(50)),
+              hintText: 'Enter Name',
+            ),
+          ),
+        ),
+        ElevatedButton(
+          onPressed: () {
+            setNamesData(namesController.text);
+          },
+          child: Text('Save'),
+          style: ButtonStyle(
+            backgroundColor: MaterialStateProperty.all(Colors.green),
+          ),
+        ),
+        ElevatedButton(
+          onPressed: onPressed,
+          child: Text('View Names'),
+          style: ButtonStyle(
+            backgroundColor: MaterialStateProperty.all(Colors.green),
+          ),
+        )
+      ],
+    );
+  }
+
+  onPressed() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => NamesScreen(),
+      ),
+    );
+  }
+
+  Future<void> setNamesData(nameValue) async {
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setString('nameData', nameValue);
+  }
+}
+
+/*import 'dart:convert';
 import 'package:store_data/pizza.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -27,23 +123,54 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int appCounter;
+  int? appCounter;
   String pizzaString = '';
 
   @override
   void initState() {
-    readJsonFile();
+    readAndWritePreference();
     super.initState();
   }
 
-  @override
+  Future readAndWritePreference() async{
+    final prefs = await SharedPreferences.getInstance();
+    int? appCounter = prefs.getInt('appCounter')!;
+    (appCounter < 1) ? 1 : appCounter++;
+    await prefs.setInt('appCounter', appCounter);
+    setState(() {
+      appCounter = appCounter;
+    });
+  }
+
+  Future deletePreferences() async{
+    final prefs = await SharedPreferences.getInstance();
+    prefs.clear();
+    setState(() {
+      appCounter = 0;
+    });
+  }
+
+
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('JSON'),
+        title: Text('Shared Preferences'),
       ),
       body: Container(
-        child: FutureBuilder(
+        child: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                Text(
+                    'You have opened the app ' + appCounter.toString() +
+                        ' times.'),
+                ElevatedButton(
+                  onPressed: () {
+                    deletePreferences();
+                  },
+                  child: Text('Reset counter'),
+                )],)),
+        /*child: FutureBuilder(
           future: readJsonFile(),
           builder: (BuildContext context, AsyncSnapshot<List<Pizza>> pizzas) {
             return ListView.builder(
@@ -58,12 +185,12 @@ class _MyHomePageState extends State<MyHomePage> {
               },
             );
           },
-        ),
+        ),*/
       ),
     );
   }
 
-  Future<List<Pizza>> readJsonFile() async {
+  /*Future<List<Pizza>> readJsonFile() async {
     String myString = await DefaultAssetBundle.of(context)
         .loadString('assets/pizzalist.json');
     List myMap = jsonDecode(myString);
@@ -78,14 +205,16 @@ class _MyHomePageState extends State<MyHomePage> {
     print(json);
     return myPizzas;
 
-  }
+  }*/
 
-  String convertToJson(List<Pizza> pizzas){
+
+  /*String convertToJson(List<Pizza> pizzas){
     String json = '[';
     pizzas.forEach((pizza) {
       json += jsonEncode(pizza);
     });
     json += ']';
     return json;
-  }
-}
+  }*/
+
+} */
