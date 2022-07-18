@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:path_provider/path_provider.dart';
+import 'dart:io';
 
 void main() {
   runApp(MyApp());
@@ -36,15 +37,43 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   String documentsPath = '';
   String tempPath = '';
+  File? myFile;
+  String fileText = '';
 
 
   @override
   void initState(){
-    getPaths();
+    getPaths().then((_) {
+      myFile = File('$documentsPath/pizzas.txt');
+      writeFile();
+    });
     super.initState();
   }
 
-  Future getPaths() async{
+  Future<bool> writeFile() async {
+    try{
+      await myFile!.writeAsString('Margherita, Capricciosa, Napoli');
+      return true;
+    }
+    catch(e){
+      return false;
+    }
+  }
+
+  readFile() async {
+    try{
+      String fileContent = await myFile!.readAsString();
+      setState(() {
+        fileText = fileContent;
+      });
+      return true;
+    }
+    catch(e){
+      return false;
+    }
+  }
+
+  Future<dynamic> getPaths() async{
     final docDir = await getApplicationDocumentsDirectory();
     final tempDir = await getTemporaryDirectory();
     setState(() {
@@ -55,14 +84,20 @@ class _MyHomePageState extends State<MyHomePage> {
   }
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Column(
+    return Column(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        crossAxisAlignment: CrossAxisAlignment.center,
+
         children: [
-          Text('Doc Path: ${documentsPath}'),
-          Text('Temp Path: ${tempPath}'),
+          Text('Doc Path: $documentsPath'),
+          Text('Temp Path: $tempPath'),
+          ElevatedButton(
+              onPressed: (){
+                readFile();
+              },
+              child: Text('Read File'),),
+          Text(fileText),
         ],
-      ),
     );
   }
 }
