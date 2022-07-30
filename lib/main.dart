@@ -1,4 +1,89 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+
+void main() {
+  runApp(const MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  const MyApp({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Path Provider',
+      theme: ThemeData(
+        primarySwatch: Colors.indigo,
+        visualDensity: VisualDensity.adaptivePlatformDensity,
+      ),
+      home: const MyHomePage(),
+    );
+  }
+}
+
+class MyHomePage extends StatefulWidget {
+  const MyHomePage({Key? key}) : super(key: key);
+
+  @override
+  _MyHomePageState createState() => _MyHomePageState();
+}
+
+class _MyHomePageState extends State<MyHomePage> {
+  final pwdController = TextEditingController();
+  String myPass = '';
+  final storage = const FlutterSecureStorage();
+  final myKey = 'myPass';
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  Future writeToSecureStorage() async {
+    await storage.write(key: myKey, value: pwdController.text);
+  }
+
+  Future<String> readToSecureStorage() async {
+    String? secret = await storage.read(key: myKey);
+    return secret!;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('Path Provider')),
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            children: [
+              TextField(
+                controller: pwdController,
+              ),
+              ElevatedButton(
+                  child: const Text('Save Value'),
+                  onPressed: () {
+                    writeToSecureStorage();
+                  }),
+              ElevatedButton(
+                  child: const Text('Read Value'),
+                  onPressed: () {
+                    readToSecureStorage().then((value) {
+                      setState(() {
+                      myPass = value;
+                      });
+                    });
+                  }),
+              Text(myPass),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/*import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:path_provider/path_provider.dart';
 import 'dart:io';
@@ -101,7 +186,7 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 }
-
+*/
 
 /*class MyHomePage extends StatefulWidget {
   const MyHomePage({Key? key}) : super(key: key);
@@ -170,8 +255,6 @@ class _MyHomePageState extends State<MyHomePage> {
     prefs.setString('nameData', nameValue);
   }
 }*/
-
-
 
 /*import 'dart:convert';
 import 'package:store_data/pizza.dart';
