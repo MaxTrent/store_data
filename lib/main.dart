@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:store_data/httphelper.dart';
+import 'package:store_data/pizza.dart';
+import 'pizza_detail.dart';
 
 void main() {
   runApp(const MyApp());
@@ -36,7 +39,14 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   void initState() {
+    callPizza();
     super.initState();
+  }
+
+  Future<List<Pizza>?> callPizza() async {
+    HttpHelper helper = HttpHelper();
+    List<Pizza>? pizzas = await helper.getListPizza();
+    return pizzas;
   }
 
   Future writeToSecureStorage() async {
@@ -52,32 +62,30 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Path Provider')),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            children: [
-              TextField(
-                controller: pwdController,
-              ),
-              ElevatedButton(
-                  child: const Text('Save Value'),
-                  onPressed: () {
-                    writeToSecureStorage();
-                  }),
-              ElevatedButton(
-                  child: const Text('Read Value'),
-                  onPressed: () {
-                    readToSecureStorage().then((value) {
-                      setState(() {
-                      myPass = value;
-                      });
-                    });
-                  }),
-              Text(myPass),
-            ],
-          ),
+      body: Container(
+        child: FutureBuilder(
+          future: callPizza(),
+          builder: (BuildContext context, AsyncSnapshot<List<Pizza>?> pizzas) {
+            return ListView.builder(
+              itemCount: (pizzas == null ? 0 : pizzas.data!.length),
+              itemBuilder: (BuildContext context, int position) {
+                return ListTile(
+                  title: Text(pizzas.data![position].pizzaName!),
+                  subtitle: Text(pizzas.data![position].description! +
+                      ' - €' +
+                      pizzas.data![position].price.toString()),
+                );
+              },
+            );
+          },
         ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        child: Icon(Icons.add),
+        onPressed: () {
+          Navigator.push(
+              context, MaterialPageRoute(builder: (context) => PizzaDetails()),);
+        },
       ),
     );
   }
