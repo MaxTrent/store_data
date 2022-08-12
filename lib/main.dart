@@ -49,7 +49,7 @@ class _MyHomePageState extends State<MyHomePage> {
     return pizzas;
   }
 
-  Future writeToSecureStorage() async {
+  /*Future writeToSecureStorage() async {
     await storage.write(key: myKey, value: pwdController.text);
   }
 
@@ -57,6 +57,7 @@ class _MyHomePageState extends State<MyHomePage> {
     String? secret = await storage.read(key: myKey);
     return secret!;
   }
+   */
 
   @override
   Widget build(BuildContext context) {
@@ -67,11 +68,11 @@ class _MyHomePageState extends State<MyHomePage> {
           future: callPizza(),
           builder: (BuildContext context, AsyncSnapshot<List<Pizza>?> pizzas) {
             return ListView.builder(
-              itemCount: (pizzas == null ? 0 : pizzas.data!.length),
+              itemCount: (pizzas == null ? 0 : pizzas.data?.length),
               itemBuilder: (BuildContext context, int position) {
                 return ListTile(
-                  title: Text(pizzas.data![position].pizzaName!),
-                  subtitle: Text(pizzas.data![position].description! +
+                  title: Text(pizzas.data![position].pizzaName),
+                  subtitle: Text(pizzas.data![position].description +
                       ' - €' +
                       pizzas.data![position].price.toString()),
                 );

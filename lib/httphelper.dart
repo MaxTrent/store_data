@@ -29,12 +29,16 @@ Future<List<Pizza>?> getListPizza() async{
 
 Future<String> postPizza(Pizza pizza) async{
   String post = json.encode(pizza.toJson());
-  Uri url = Uri.https(authority, postPath);
+  Uri url = Uri.https(authority, post);
   http.Response r = await http.post(
     url,
     body: post,
   );
   return r.body;
+}
+
+Future<String> putPizza(Pizza pizza) async{
+  String put
 }
 
 }

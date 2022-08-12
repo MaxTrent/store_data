@@ -6,8 +6,8 @@ class Pizza {
   static const keyImage = 'imageUrl';
 
   int? id;
-  String? pizzaName;
-  String? description;
+  late String pizzaName;
+  late String description;
   double? price;
   String? imgUrl;
 
